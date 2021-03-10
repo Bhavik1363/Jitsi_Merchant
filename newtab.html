@@ -64,14 +64,41 @@
                 },
             };
             api = new JitsiMeetExternalAPI(domain, options);
+            api.addEventListener('videoConferenceLeft', () => {
+                videoCallLeft(roomName)
+            })
 
         }
     </script>
     <script>
-        function startMeeting(){
+        var firebaseConfig = {
+            apiKey: 'AIzaSyC9MVIIOcSWDFT30U1s75s5sYdz3dhudpo',
+            authDomain: 'rtc-server.firebaseapp.com',
+            databaseURL: 'https://rtc-server.firebaseio.com',
+            projectId: 'rtc-server',
+            storageBucket: 'rtc-server.appspot.com',
+            messagingSenderId: '38884098845',
+            appId: '1:38884098845:web:8f3f0c021375b4388257f4'
+        };
+        // Initialize Firebase
+        let db = firebase.initializeApp(firebaseConfig);
+        function videoCallLeft(roomDocName) {
+            console.log("Video call left")
+
+            db.firestore().collection('Meeting').doc(roomDocName).set({
+                attended: 'completed',
+            }, { merge: true })
+            JitsiWindow.close();
+
+        }
+    </script>
+    <script>
+        function startMeeting() {
             console.log(localStorage.getItem('room-name'));
             let room = localStorage.getItem('room-name');
-            StartJitsiMeeting(room)
+            StartJitsiMeeting(room);
+
+
         }
     </script>
     <div>
